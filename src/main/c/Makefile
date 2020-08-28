@@ -52,6 +52,15 @@ LINKBSD32=c++ -m32 -shared
 CCBSD64=cc $(BSDINCLUDE) -O3 -Wall -c -fmessage-length=0 -fPIC -m64 -MMD
 LINKBSD64=c++ -m64 -shared
 
+# Illumos
+ILMOBJ=build/fixup.o build/fuserImp.o build/SerialImp.o
+ILMINCLUDE=-I"./include" -I"./include/target" -I/opt/local/java/openjdk8/include/ -I/opt/local/java/openjdk8/include/solaris/
+
+CCILM32=cc $(ILMINCLUDE) -O3 -Wall -c -fmessage-length=0 -fPIC -m32 -MMD
+LINKILM32=c++ -m32 -shared
+
+CCILM64=cc $(ILMINCLUDE) -O3 -Wall -c -fmessage-length=0 -fPIC -m64 -MMD
+LINKILM64=c++ -m64 -shared
 
 #Wine Windows
 WINLINKOPT = -shared  -Wl,--add-stdcall-alias -DBUILD_DLL
@@ -102,6 +111,11 @@ dirs:
 	 then echo "FreeBSD native dir exists"; else\
 	 mkdir -p resources/native/freebsd/x86_64/; \
 	 mkdir -p resources/native/freebsd/x86_32/; \
+	fi
+	if (test -d resources/native/solaris);\
+	 then echo "solaris native dir exists"; else\
+	 mkdir -p resources/native/solaris/x86_64/; \
+	 mkdir -p resources/native/solaris/x86_32/; \
 	fi
 
 windowsLocal:
@@ -174,6 +188,22 @@ freebsd64:dirs
 	$(CCBSD64) src/SerialImp.c -o build/SerialImp.o
 	#rm "resources/native/freebsd/x86_64/libNRJavaSerial.so"
 	$(LINKBSD64) -o"resources/native/freebsd/x86_64/libNRJavaSerial.so" $(LINOBJ)
+	rm build/*
+solaris:solaris32 solaris64
+	echo all solaris ok!
+solaris32:dirs
+	$(CCILM32) src/fixup.c -o build/fixup.o
+	$(CCILM32) src/fuserImp.c -o build/fuserImp.o
+	$(CCILM32) src/SerialImp.c -o build/SerialImp.o
+	#rm "resources/native/solaris/x86_32/libNRJavaSerial.so"
+	$(LINKILM32) -o"resources/native/solaris/x86_32/libNRJavaSerial.so" $(LINOBJ)
+	rm build/*
+solaris64:dirs
+	$(CCILM64) src/fixup.c -o build/fixup.o
+	$(CCILM64) src/fuserImp.c -o build/fuserImp.o
+	$(CCILM64) src/SerialImp.c -o build/SerialImp.o
+	#rm "resources/native/solaris/x86_64/libNRJavaSerial.so"
+	$(LINKILM64) -o"resources/native/solaris/x86_64/libNRJavaSerial.so" $(LINOBJ)
 	rm build/*
 
 .PHONY: arm

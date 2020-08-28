@@ -26,6 +26,15 @@ freebsd32:
 freebsd64:
 	gmake -C src/main/c freebsd64
 	./gradlew build
+solaris:
+	gmake -C src/main/c solaris
+	gradle build
+solaris32:
+	gmake -C src/main/c solaris32
+	gradle build
+solaris64:
+	gmake -C src/main/c solaris64
+	gradle build
 arm:
 	sudo apt-get install g++-arm-linux-gnueabihf g++-arm-linux-gnueabi g++-aarch64-linux-gnu 
 	make -C src/main/c arm

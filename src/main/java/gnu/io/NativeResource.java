@@ -191,6 +191,12 @@ public class NativeResource {
 			}else {
 				file="/native/freebsd/x86_32/" + name;
 			}
+		}else if(OSUtil.isSolaris()) {
+			if(OSUtil.is64Bit()) {
+				file="/native/solaris/x86_64/" + name;
+			}else {
+				file="/native/solaris/x86_32/" + name;
+			}
 		}else{
 			//System.err.println("Can't load native file: "+name+" for os arch: "+OSUtil.getOsArch());
 			return null;
@@ -317,6 +323,10 @@ public class NativeResource {
 			return getOsName().toLowerCase().startsWith("freebsd");
 		}
 
+		public static boolean isSolaris() {
+			return getOsName().toLowerCase().startsWith("sunos");
+		}
+
 		public static boolean isOSX() {
 			return getOsName().toLowerCase().startsWith("mac");
 		}
@@ -326,7 +336,7 @@ public class NativeResource {
 				return ".dll";
 			}
 
-			if(isLinux() || isFreeBSD()) {
+			if(isLinux() || isFreeBSD()|| isSolaris()) {
 				return ".so";
 			}
 
